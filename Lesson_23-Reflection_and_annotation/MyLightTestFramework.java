@@ -1,5 +1,4 @@
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
@@ -15,33 +14,32 @@ public class MyLightTestFramework {
             Method afterSuite = null;
             TreeMap<Integer, LinkedList<Method>> tests = new TreeMap<>();
             for (Method m : methods) {
-                Annotation[] annotations = m.getDeclaredAnnotations();
-                if (annotations.length != 0) {
-                    for (int i = 0; i < annotations.length; i++) {
-                        String buf = annotations[i].toString();
-                        if (buf.startsWith("@Test")) {
-                            Integer key = Integer.valueOf(buf.split("[=)]")[1]);
-                            if (tests.containsKey(key)) {
-                                tests.get(key).add(m);
-                            } else {
-                                LinkedList<Method> bufList = new LinkedList<>();
-                                bufList.add(m);
-                                tests.put(key, bufList);
-                            }
-                        } else if (buf.startsWith("@BeforeSuite")) {
-                            if (beforeSuite == null) {
-                                beforeSuite = m;
-                            } else {
-                                throw new RuntimeException("There are more than one BeforeSuite method");
-                            }
-                        } else if (buf.startsWith("@AfterSuite")) {
-                            if (afterSuite == null) {
-                                afterSuite = m;
-                            } else {
-                                throw new RuntimeException("There are more than one AfterSuite method");
-                            }
-                        }
+                if (m.isAnnotationPresent(Test.class)){
+                    Integer key = m.getAnnotation(Test.class).order();
+                    if (tests.containsKey(key)) {
+                        tests.get(key).add(m);
+                    } else {
+                        LinkedList<Method> bufList = new LinkedList<>();
+                        bufList.add(m);
+                        tests.put(key, bufList);
                     }
+                    continue;
+                }
+                if (m.isAnnotationPresent(BeforeSuite.class)){
+                    if (beforeSuite == null) {
+                        beforeSuite = m;
+                    } else {
+                        throw new RuntimeException("There are more than one BeforeSuite method");
+                    }
+                    continue;
+                }
+                if (m.isAnnotationPresent(AfterSuite.class)){
+                    if (afterSuite == null) {
+                        afterSuite = m;
+                    } else {
+                        throw new RuntimeException("There are more than one AfterSuite method");
+                    }
+                    continue;
                 }
             }
             if (afterSuite == null) throw new RuntimeException("There is no AfterSuite method");
@@ -83,5 +81,4 @@ public class MyLightTestFramework {
         }
 
     }
-
 }
