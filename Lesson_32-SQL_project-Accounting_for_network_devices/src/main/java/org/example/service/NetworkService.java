@@ -1,11 +1,16 @@
 package org.example.service;
 
+import java.lang.reflect.Field;
 import org.example.dao.NetworkDao;
 import org.example.model.Network;
 import org.example.ui.UiController;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
+import org.example.model.Device;
+import static org.example.service.UserChoice.FIND_DEVICES_BY_FIELD;
 
 public class NetworkService {
     private final NetworkDao networkDao;
@@ -94,6 +99,67 @@ public class NetworkService {
                 var networkToRemove = uiController.selectOf(allNetworks, "network to remove");
                 networkDao.remove(networkToRemove);
                 uiController.printInfo("Network " + networkToRemove + " successfully removed");
+            }
+            case FIND_DEVICES_BY_FIELD -> {
+                var deviceFields = Stream.of(Device.class.getDeclaredFields()).map(field -> field.getName()).toList();
+                uiController.printInfo("Device has fields: " + Arrays.toString(deviceFields.toArray()));
+                var fieldForFind = uiController.selectField(deviceFields, "field for filtering");
+                try {
+                    var fieldType = Device.class.getDeclaredField(fieldForFind).getType().getSimpleName();
+                    var valueForFind = uiController.getValueForFilter(fieldType, "value for filtering");
+                    var filteredDevices = networkDao.filterDevice(fieldForFind, fieldType,valueForFind);
+                    if (filteredDevices.isEmpty()){
+                        uiController.printInfo("There is no device with such a field");
+                    }
+                        filteredDevices.forEach(uiController::print);
+                } catch (NoSuchFieldException ex) {
+                    throw new RuntimeException("No such field in FIND_DEVICES_BY_FIELD");
+                }
+            }
+            case FIND_NETWORKS_BY_FIELD -> {
+                var networkFields = Stream.of(Network.class.getDeclaredFields()).map(field -> field.getName()).toList();
+                uiController.printInfo("Network has fields: " + Arrays.toString(networkFields.toArray()));
+                var fieldForFind = uiController.selectField(networkFields, "field for filtering");
+                try {
+                    var fieldType = Device.class.getDeclaredField(fieldForFind).getType().getSimpleName();
+                    var valueForFind = uiController.getValueForFilter(fieldType, "value for filtering");
+                    var filteredDevices = networkDao.filterNetwork(fieldForFind, fieldType,valueForFind);
+                    if (filteredDevices.isEmpty()){
+                        uiController.printInfo("There is no network with such a field");
+                    }
+                        filteredDevices.forEach(uiController::print);
+                } catch (NoSuchFieldException ex) {
+                    throw new RuntimeException("No such field in FIND_NETWORKS_BY_FIELD");
+                }
+            }
+            case SHOW_ALL_DEVICES_AND_CONNECTIONS -> {
+                networkDao.showDevicesAndConnections().forEach(uiController::printInfo);
+            }
+            case SHOW_ALL_NETWORKS_AND_DEVICES -> {
+                networkDao.showNetworksAndDevices().forEach(uiController::printInfo);
+            }
+            case STATISTICS -> {
+                try {
+                    var classForTable = uiController.selectClassForTable();
+                    var classFields = Stream.of(Class.forName("org.example.model." + classForTable).getDeclaredFields()).map(field -> field.getName()).toList();
+                    uiController.printInfo(classForTable + " has fields: " + Arrays.toString(classFields.toArray()));
+                    var fieldForFind = uiController.selectField(classFields, "field for filtering");
+                    try {
+                        var fieldType = Class.forName("org.example.model." + classForTable).getDeclaredField(fieldForFind).getType().getSimpleName();
+                        var valueForFind = uiController.getValueForFilter(fieldType, "value for filtering");
+                        var filteredStrings = networkDao.filter(classForTable, fieldForFind, fieldType, valueForFind);
+                        if (!filteredStrings.isEmpty()){
+                            filteredStrings.forEach(uiController::printInfo);
+                            uiController.printInfo("Found " + filteredStrings.size() + " suitable " + classForTable.toLowerCase() + "s.");
+                        } else {
+                            uiController.printInfo("Found no suitable " + classForTable.toLowerCase() + ".");
+                        }
+                    } catch (NoSuchFieldException ex) {
+                        throw new RuntimeException("No such field in STATISTICS");
+                    }
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException("No such class for proccess in STATISTICS");
+                }
             }
             default -> uiController.printError("Unexpected code; contact administrator");
         }

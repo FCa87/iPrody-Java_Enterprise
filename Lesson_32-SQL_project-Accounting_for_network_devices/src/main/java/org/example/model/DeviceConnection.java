@@ -1,30 +1,30 @@
 package org.example.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class DeviceConnection implements Model {
     private long id;
-    private long deviceFromId;
-    private long deviceToId;
-    private String type;
+    private long device_from_id;
+    private long device_to_id;
+    private String connection_type;
     private String status;
-    private Date createdAt;
+    private Timestamp created_at;
 
 
     public DeviceConnection() {}
 
     public DeviceConnection(String type, String status) {
-        this.type = type;
+        this.connection_type = type;
         this.status = status;
     }
 
-    public DeviceConnection(long id, long deviceFromId, long deviceToId, String type, String status, Date createdAt) {
+    public DeviceConnection(long id, long deviceFromId, long deviceToId, String type, String status, Timestamp createdAt) {
         this.id = id;
-        this.deviceFromId = deviceFromId;
-        this.deviceToId = deviceToId;
-        this.type = type;
+        this.device_from_id = deviceFromId;
+        this.device_to_id = deviceToId;
+        this.connection_type = type;
         this.status = status;
-        this.createdAt = createdAt;
+        this.created_at = createdAt;
     }
 
     public long getId() {
@@ -36,27 +36,27 @@ public class DeviceConnection implements Model {
     }
 
     public long getDeviceFromId() {
-        return deviceFromId;
+        return device_from_id;
     }
 
     public void setDeviceFromId(long deviceFromId) {
-        this.deviceFromId = deviceFromId;
+        this.device_from_id = deviceFromId;
     }
 
     public long getDeviceToId() {
-        return deviceToId;
+        return device_to_id;
     }
 
     public void setDeviceToId(long deviceToId) {
-        this.deviceToId = deviceToId;
+        this.device_to_id = deviceToId;
     }
 
     public String getType() {
-        return type;
+        return connection_type;
     }
 
     public void setType(String type) {
-        this.type = type;
+        this.connection_type = type;
     }
 
     public String getStatus() {
@@ -67,23 +67,23 @@ public class DeviceConnection implements Model {
         this.status = status;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Timestamp getCreatedAt() {
+        return created_at;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.created_at = createdAt;
     }
 
     @Override
     public String toString() {
         return "DeviceConnection{" +
                 "id=" + id +
-                ", deviceFromId=" + deviceFromId +
-                ", deviceToId=" + deviceToId +
-                ", type='" + type + '\'' +
+                ", deviceFromId=" + device_from_id +
+                ", deviceToId=" + device_to_id +
+                ", type='" + connection_type + '\'' +
                 ", status='" + status + '\'' +
-                ", createdAt=" + createdAt +
+                ", createdAt=" + created_at +
                 '}';
     }
 }

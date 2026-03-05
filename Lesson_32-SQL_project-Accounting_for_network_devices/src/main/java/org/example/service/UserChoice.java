@@ -10,7 +10,12 @@ public enum UserChoice {
     EDIT_NETWORK(4, "to edit networks"),
     REMOVE_CONNECTION(5, "to remove connection"),
     REMOVE_NETWORK(6, "to remove network"),
-    EXIT(7, "to exit");
+    FIND_DEVICES_BY_FIELD(7, "to find devices by field"),
+    FIND_NETWORKS_BY_FIELD(8, "to find networks by field"),
+    SHOW_ALL_DEVICES_AND_CONNECTIONS(9, "to show all devices and connections between them"),
+    SHOW_ALL_NETWORKS_AND_DEVICES(10, "to show all networks and devices"),
+    STATISTICS(11, "to get statistics"),
+    EXIT(12, "to exit");
 
 
     private int code;
