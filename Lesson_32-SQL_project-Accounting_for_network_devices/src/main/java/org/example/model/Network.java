@@ -1,20 +1,20 @@
 package org.example.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Network implements Model{
     private long id;
     private String name;
     private String description;
-    private Date createdAt;
+    private Timestamp created_at;
 
     public Network() {}
 
-    public Network(long id, String name, String description, Date createdAt) {
+    public Network(long id, String name, String description, Timestamp createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.createdAt = createdAt;
+        this.created_at = createdAt;
     }
 
     public Network(String name, String description) {
@@ -46,12 +46,12 @@ public class Network implements Model{
         this.description = description;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Timestamp getCreatedAt() {
+        return created_at;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.created_at = createdAt;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Network implements Model{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
+                ", createdAt=" + created_at +
                 '}';
     }
 }

@@ -175,7 +175,7 @@ public class NetworkDao {
 
     public DeviceConnection save(DeviceConnection deviceConnection) throws SQLException {
         try (var connection = openConnection()) {
-            try (var statement = connection.prepareStatement("insert into networks.connections (device_from_id, device_to_id, type, status) values (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+            try (var statement = connection.prepareStatement("insert into networks.connections (device_from_id, device_to_id, connection_type, status) values (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
                 statement.setLong(1, deviceConnection.getDeviceFromId());
                 statement.setLong(2, deviceConnection.getDeviceToId());
                 statement.setString(3, deviceConnection.getType());
@@ -190,7 +190,151 @@ public class NetworkDao {
             }
         }
     }
+    
+    public List<Device> filterDevice(String field, String type, String value) throws SQLException{
+        try (var connection = openConnection()) {
+            try (var statement = connection.prepareStatement("select * from networks.devices where " + field + " = ?")) {
+                switch (type){
+                    case "long" ->  statement.setLong(1, Long.parseLong(value));
+                    case "String" -> statement.setString(1, value);
+                    case "Timestamp" -> statement.setTimestamp(1, Timestamp.valueOf(value));
+                    default -> throw new RuntimeException("Unexpected type of device's field value");
+                }
+                var result = statement.executeQuery();
+                List<Device> filteredDevices = new ArrayList<>();
+                while (result.next()) {
+                    filteredDevices.add(toDeviceModel(result));
+                }
+                return filteredDevices;
+            }
+        }
+    }
+    
+    public List<Network> filterNetwork(String field, String type, String value) throws SQLException{
+        try (var connection = openConnection()) {
+            try (var statement = connection.prepareStatement("select * from networks.networks where " + field + " = ?")) {
+                switch (type){
+                    case "long" ->  statement.setLong(1, Long.parseLong(value));
+                    case "String" -> statement.setString(1, value);
+                    case "Timestamp" -> statement.setTimestamp(1, Timestamp.valueOf(value));
+                    default -> throw new RuntimeException("Unexpected type of network's field value");
+                }
+                var result = statement.executeQuery();
+                List<Network> filteredNetworks = new ArrayList<>();
+                while (result.next()) {
+                    filteredNetworks.add(toModel(result));
+                }
+                return filteredNetworks;
+            }
+        }
+    }
+    
+    public List<String> filter(String classForTable, String field, String type, String value) throws SQLException{
+        String table;
+        switch (classForTable){
+            case "Network" -> table = "networks";
+            case "Device" -> table = "devices";
+            case "DeviceConnection" -> table = "connections";
+            default -> throw new RuntimeException("Unexpected type of classForTable in filter");
+        }
+        try (var connection = openConnection()) {
+            try (var statement = connection.prepareStatement("select * from networks." + table + " where " + field + " = ?")) {
+                switch (type){
+                    case "long" ->  statement.setLong(1, Long.parseLong(value));
+                    case "String" -> statement.setString(1, value);
+                    case "Timestamp" -> statement.setTimestamp(1, Timestamp.valueOf(value));
+                    default -> throw new RuntimeException("Unexpected type of network's field value");
+                }
+                var result = statement.executeQuery();
+                List<String> filteredStrings = new ArrayList<>();
+                while (result.next()) {
+                    StringBuilder oneLine = new StringBuilder();
+                    oneLine.append("{");
+                    ResultSetMetaData metaData = result.getMetaData();
+                    int numberOfColomns = metaData.getColumnCount();
+                    for (int i = 1; i < numberOfColomns; i++){
+                        oneLine.append(metaData.getColumnName(i));
+                        oneLine.append("=");
+                        oneLine.append(result.getString(i));
+                        oneLine.append(";");
+                    }
+                    oneLine.append(metaData.getColumnName(numberOfColomns));
+                    oneLine.append("=");
+                    oneLine.append(result.getString(numberOfColomns));
+                    oneLine.append("}");
+                    filteredStrings.add(oneLine.toString());
+                }
+                return filteredStrings;
+            }
+        }
+    }
+    
+    public List<String> showDevicesAndConnections() throws SQLException{
+        try (var connection = openConnection()) {
+            try (var statement = connection.createStatement()) {
+                var result = statement.executeQuery("select * from networks.devices d " +
+                        "left join networks.connections c on " +
+                        "d.id = c.device_from_id or d.id = c.device_to_id " +
+                        "order by 1, 9");
+                List<String> devicesAndConnections = new ArrayList<>();
+                while (result.next()) {
+                    StringBuilder oneLine = new StringBuilder();
+                    oneLine.append("{");
+                    ResultSetMetaData metaData = result.getMetaData();
+                    int numberOfColomns = metaData.getColumnCount();
+                    for (int i = 1; i < numberOfColomns; i++){
+                        oneLine.append(metaData.getColumnName(i));
+                        oneLine.append("=");
+                        oneLine.append(result.getString(i));
+                        oneLine.append(";");
+                    }
+                    oneLine.append(metaData.getColumnName(numberOfColomns));
+                    oneLine.append("=");
+                    oneLine.append(result.getString(numberOfColomns));
+                    oneLine.append("}");
+                    devicesAndConnections.add(oneLine.toString());
+                }
+                if (devicesAndConnections.size() == 0){
+                    devicesAndConnections.add("There are no devices and connections!");
+                }
+                return devicesAndConnections;
+            }
+        }
+    }
 
+    public List<String> showNetworksAndDevices() throws SQLException{
+        try (var connection = openConnection()) {
+            try (var statement = connection.createStatement()) {
+                var result = statement.executeQuery("select * from networks.networks n " +
+                        "left join networks.devices d on " +
+                        "n.id = d.network_id " +
+                        "order by 1, 5");
+                List<String> devicesAndConnections = new ArrayList<>();
+                while (result.next()) {
+                    StringBuilder oneLine = new StringBuilder();
+                    oneLine.append("{");
+                    ResultSetMetaData metaData = result.getMetaData();
+                    int numberOfColomns = metaData.getColumnCount();
+                    for (int i = 1; i < numberOfColomns; i++){
+                        oneLine.append(metaData.getColumnName(i));
+                        oneLine.append("=");
+                        oneLine.append(result.getString(i));
+                        oneLine.append(";");
+                    }
+                    oneLine.append(metaData.getColumnName(numberOfColomns));
+                    oneLine.append("=");
+                    oneLine.append(result.getString(numberOfColomns));
+                    oneLine.append("}");
+                    devicesAndConnections.add(oneLine.toString());
+                }
+                if (devicesAndConnections.size() == 0){
+                    devicesAndConnections.add("There are no devices and connections!");
+                }
+                return devicesAndConnections;
+            }
+        }
+    }
+    
     private static Connection openConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:postgresql://localhost:5432/last_networks", "admin", "admin");
     }
