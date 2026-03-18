@@ -1,0 +1,40 @@
+1) curl -X GET https://timeapi.io/api/health/check -v
+Note: Unnecessary use of -X or --request, GET is already inferred.
+* Host timeapi.io:443 was resolved.
+* IPv6: (none)
+* IPv4: 51.75.52.74
+*   Trying 51.75.52.74:443...
+* schannel: disabled automatic use of client certificate
+* ALPN: curl offers http/1.1
+* ALPN: server accepted http/1.1
+* Connected to timeapi.io (51.75.52.74) port 443
+* using HTTP/1.x
+> GET /api/health/check HTTP/1.1
+> Host: timeapi.io
+> User-Agent: curl/8.13.0
+> Accept: */*
+>
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: nginx/1.29.4
+< Date: Tue, 10 Mar 2026 08:19:10 GMT
+< Content-Length: 0
+< Connection: keep-alivee
+<
+* Connection #0 to host timeapi.io left intact
+
+
+2) curl -X GET https://timeapi.io/api/time/current/zone?timeZone=Europe%2FMoscow -H "accept: application/json"
+{"year":2026,"month":3,"day":10,"hour":11,"minute":30,"seconds":1,"milliSeconds":327,"dateTime":"2026-03-10T11:30:01.3276524","date":"03/10/2026","time":"11:30","timeZone":"Europe/Moscow","dayOfWeek":"Tuesday","dstActive":false}
+
+
+3) curl -X GET https://timeapi.io/api/time/current/ip?ipAddress=129.58.69.123 -H "Accept: application/json"
+{"year":2026,"month":3,"day":10,"hour":4,"minute":37,"seconds":52,"milliSeconds":326,"dateTime":"2026-03-10T04:37:52.3265712","date":"03/10/2026","time":"04:37","timeZone":"America/New_York","dayOfWeek":"Tuesday","dstActive":true}
+
+
+4) curl -X GET https://timeapi.io/api/conversion/dayoftheweek/2026-03-10 -H "accept: application/json"
+{"dayOfWeek":"Tuesday"}
+
+
+5) curl -X POST https://timeapi.io/api/conversion/translate -H "accept: application/json" -H "Content-Type: application/json" -d "{\"dateTime\":\"2026-03-10 12:15:00\",\"languageCode\":\"ru\"}"
+{"dateTime":"2026-03-10 12:15:00","languageCode":"ru","friendlyDateTime":"вторник, 10 марта 2026\u202Fг. 12:15:00","friendlyDate":"вторник, 10 марта 2026\u202Fг.","friendlyTime":"12:15:00"}
