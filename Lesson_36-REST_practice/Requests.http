@@ -1,0 +1,29 @@
+Добавление книги (POST localhost:8080/LibraryREST/api/books)
+Books jsons:
+
+{"title":"The adventures of Tom Sawyer","author":"Twain Mark","published_year":1876,"genre":"Novel"}
+{"title":"Crime and Punishment","author":"Dostoyevsky Fyodor","published_year":1866,"genre":"Novel"}
+{"title":"Hamlet","author":"William Shakespeare","published_year":1601,"genre":"Tragedy"}
+{"title":"Norwegian Wood","author":"Murakami Haruki","published_year":1987,"genre":"Novel"}
+
+
+Добавление читателей (POST localhost:8080/LibraryREST/api/readers)
+Readers jsons:
+
+{"name":"Mike","email":"cool@mail.ru","phone":"+79251268754"}
+{"name":"Sam","email":"ordinary@mail.ru","phone":"+79857775544"}
+{"name":"Robert","email":"hot@mail.ru","phone":"+77584632158"}
+
+
+Добавление информации о взятии книг читателями (POST localhost:8080/LibraryREST/api/reservations)
+Borrowed_books jsons:
+
+{"book_id":1,"reader_id":3,"borrow_date":"2026-01-03","return_date":"2026-01-20","status":"RETURNED"}
+{"book_id":2,"reader_id":3,"borrow_date":"2026-01-25","status":"BORROWED"}
+{"book_id":4,"reader_id":2,"borrow_date":"2026-01-14","status":"BORROWED"}
+{"book_id":3,"reader_id":1,"borrow_date":"2025-12-25","return_date":"2026-02-03","status":"RETURNED"}
+
+
+Запрос об удерживаемых книгах читателем по его id (например "2")
+
+GET localhost:8080/LibraryREST/api/reservations/2
