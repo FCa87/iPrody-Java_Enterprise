@@ -1,0 +1,8 @@
+CREATE SCHEMA Students;
+
+CREATE TABLE IF NOT EXISTS Students.student
+(
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255)
+)
