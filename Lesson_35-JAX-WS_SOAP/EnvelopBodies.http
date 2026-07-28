@@ -1,0 +1,78 @@
+1) Adding book
+URL: localhost:8080/LibrarySOAP/books
+
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+                  xmlns:web="http://service.iprody35/">
+    <soapenv:Header/>
+    <soapenv:Body> 
+        <web:addBook> 
+            <book>
+                <id>1</id>
+                <title>The adventures of Tom Sawyer</title>
+                <author>Twain Mark</author>
+                <published_year>1999</published_year>
+                <genre>Novel</genre>
+            </book>
+        </web:addBook>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+
+
+2) Adding reader
+URL: localhost:8080/LibrarySOAP/readers
+
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+                  xmlns:web="http://service.iprody35/">
+    <soapenv:Header/>
+    <soapenv:Body> 
+        <web:addReader> 
+            <reader>
+                <id>1</id>
+                <name>Mike</name>
+                <email>cool123@mail.ru</email>
+                <phone>+792512642454</phone>
+            </reader>
+        </web:addReader>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+
+
+3) Adding borrowedbook
+URL: localhost:8080/LibrarySOAP/borrowedbooks
+
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+                  xmlns:web="http://service.iprody35/">
+    <soapenv:Header/>
+    <soapenv:Body> 
+        <web:addOccupiedBook> 
+            <borrowedbook>
+                <id>1</id>
+                <book_id>1</book_id>
+                <reader_id>1</reader_id>
+                <borrow_date>2026-02-04</borrow_date>
+                <status>BORROWED</status>
+            </borrowedbook>
+        </web:addOccupiedBook>
+    </soapenv:Body>
+</soapenv:Envelope>
+
+
+
+4) Searching borrowedbooks, occupied by reader 
+URL: localhost:8080/LibrarySOAP/borrowedbooks
+
+<?xml version="1.0" encoding="utf-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+                  xmlns:web="http://service.iprody35/">
+    <soapenv:Header/>
+    <soapenv:Body> 
+        <web:occupiedBooksByReader> 
+            <reader_id>2</reader_id>
+        </web:occupiedBooksByReader>
+    </soapenv:Body>
+</soapenv:Envelope>
