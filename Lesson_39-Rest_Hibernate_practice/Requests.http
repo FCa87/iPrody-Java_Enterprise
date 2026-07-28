@@ -1,0 +1,29 @@
+Добавление книги (POST localhost:8080/LibraryRestHibernate/api/books)
+Books jsons:
+
+{"title":"The adventures of Tom Sawyer","author":"Twain Mark","publishedYear":1876,"genre":"Novel"}
+{"title":"Crime and Punishment","author":"Dostoyevsky Fyodor","publishedYear":1866,"genre":"Novel"}
+{"title":"Hamlet","author":"William Shakespeare","publishedYear":1601,"genre":"Tragedy"}
+{"title":"Norwegian Wood","author":"Murakami Haruki","publishedYear":1987,"genre":"Novel"}
+
+
+Добавление читателей (POST localhost:8080/LibraryRestHibernate/api/readers)
+Readers jsons:
+
+{"name":"Mike","email":"cool@mail.ru","phone":"+79251268754"}
+{"name":"Sam","email":"ordinary@mail.ru","phone":"+79857775544"}
+{"name":"Robert","email":"hot@mail.ru","phone":"+77584632158"}
+
+
+Добавление информации о взятии книг читателями (POST localhost:8080/LibraryRestHibernate/api/reservations)
+Borrowed_books jsons:
+
+{"bookId":1,"readerId":3,"borrowDate":"2026-01-03","returnDate":"2026-01-20","status":"returned"}
+{"bookId":2,"readerId":3,"borrowDate":"2026-01-25","status":"borrowed"}
+{"bookId":4,"readerId":2,"borrowDate":"2026-01-14","status":"borrowed"}
+{"bookId":3,"readerId":1,"borrowDate":"2025-12-25","returnDate":"2026-02-03","status":"returned"}
+
+
+Запрос об удерживаемых книгах читателем по его id (например "3")
+
+GET localhost:8080/LibraryRestHibernate/api/reservations/rb?readerId=3
