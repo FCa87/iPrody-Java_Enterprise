@@ -4,6 +4,7 @@ package iPrody.controller;
 import iPrody.dto.BorrowedBookDTO;
 import iPrody.repo.BorrowedBookRepository;
 import iPrody.utils.BorrowedBookUtils;
+import iPrody.utils.CommonUtils;
 import iPrody.utils.ErrorUtils;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -42,9 +43,7 @@ public class BorrowedBookController {
             if (result.isPresent()){
                 return Response.ok(BorrowedBookUtils.toREST(result.get())).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reservation with id=" + id + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reservation with id=" + id + " hasn't been found!");
             }
         } catch (Exception ex){
             logger.catching(ex);
@@ -56,22 +55,19 @@ public class BorrowedBookController {
     @GET
     @Path("/rb")
     public Response getReservationsOfReader(@QueryParam("readerId") Integer readerId){
-        if (readerId != null && readerId > 0){
-            try{
-                return Response.ok(borrowedBookRepository.getReservationsOfReader(readerId))
-                        .build();
-            } catch (Exception ex){
-                logger.catching(ex);
-                return ErrorUtils.buildErrorResponce(
-                        "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid value. ReaderId must be above 0")
-                    .build();
+        if (readerId == null || readerId <= 0) {
+            return CommonUtils.badRequestResponse("Invalid value. ReaderId must be above 0");
         }
-    }
+        try {
+            return Response.ok(borrowedBookRepository.getReservationsOfReader(readerId))
+                    .build();
+        } catch (Exception ex) {
+            logger.catching(ex);
+            return ErrorUtils.buildErrorResponce(
+                    "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
+        }
 
+    }
 
     @POST
     public Response createBorrowedBook(BorrowedBookDTO borrowedBookDTO){
@@ -85,9 +81,7 @@ public class BorrowedBookController {
                         "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
 
     }
@@ -95,6 +89,10 @@ public class BorrowedBookController {
     @PUT
     public Response updateBorrowedBook(BorrowedBookDTO borrowedBookDTO){
         if (BorrowedBookUtils.isValid(borrowedBookDTO) && borrowedBookDTO.getId() != null){
+            var result = borrowedBookRepository.getById(borrowedBookDTO.getId());
+            if (result.isEmpty()){
+                return CommonUtils.notFoundResponse("The book with id=" + borrowedBookDTO.getId() + " hasn't been found!");
+            }
             try{
                 borrowedBookRepository.update(BorrowedBookUtils.toDB(borrowedBookDTO));
                 return Response.ok("The reservation has been updated successfully!").build();
@@ -104,9 +102,7 @@ public class BorrowedBookController {
                         "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
 
     }
@@ -123,9 +119,7 @@ public class BorrowedBookController {
                                 .entity("The reservation has been deleted successfully!")
                                 .build();
                     } else {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .entity("Values of input fields don't match with database fields. Please check them.")
-                                .build();
+                        return CommonUtils.badRequestResponse("Values of input fields don't match with database fields. Please check them.");
                     }
                 } catch (Exception ex){
                     logger.catching(ex);
@@ -133,15 +127,11 @@ public class BorrowedBookController {
                             "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reservation with id=" + borrowedBookDTO.getId() + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reservation with id=" + borrowedBookDTO.getId() + " hasn't been found!");
             }
 
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
     }
 
@@ -156,9 +146,7 @@ public class BorrowedBookController {
                         .entity("The reservation has been deleted successfully!")
                         .build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reservation with id=" + id + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reservation with id=" + id + " hasn't been found!");
             }
         } catch (Exception ex){
             logger.catching(ex);

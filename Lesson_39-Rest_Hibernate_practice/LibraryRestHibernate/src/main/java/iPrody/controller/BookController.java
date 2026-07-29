@@ -3,6 +3,7 @@ package iPrody.controller;
 import iPrody.dto.BookDTO;
 import iPrody.repo.BookRepository;
 import iPrody.utils.BookUtils;
+import iPrody.utils.CommonUtils;
 import iPrody.utils.ErrorUtils;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -42,9 +43,7 @@ public class BookController {
             if (result.isPresent()){
                 return Response.ok(BookUtils.toREST(result.get())).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The book with id=" + id + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The book with id=" + id + " hasn't been found!");
             }
         } catch (Exception ex){
             logger.catching(ex);
@@ -64,9 +63,7 @@ public class BookController {
                         "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
 
     }
@@ -74,6 +71,10 @@ public class BookController {
     @PUT
     public Response updateBook(BookDTO bookDTO){
         if (BookUtils.isValid(bookDTO) && bookDTO.getId() != null){
+            var result = bookRepository.getById(bookDTO.getId());
+            if (result.isEmpty()){
+                return CommonUtils.notFoundResponse("The book with id=" + bookDTO.getId() + " hasn't been found!");
+            }
             try{
                 bookRepository.update(BookUtils.toDB(bookDTO));
                 return Response.ok("The book has been updated successfully.").build();
@@ -83,9 +84,7 @@ public class BookController {
                         "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
 
     }
@@ -102,9 +101,7 @@ public class BookController {
                                 .entity("The book has been deleted successfully.")
                                 .build();
                     } else {
-                        return Response.status(Response.Status.BAD_REQUEST)
-                                .entity("Values of input fields don't match with database fields. Please check them.")
-                                .build();
+                        return CommonUtils.badRequestResponse("Values of input fields don't match with database fields. Please check them.");
                     }
                 } catch (Exception ex){
                     logger.catching(ex);
@@ -112,15 +109,11 @@ public class BookController {
                             "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The book with id=" + bookDTO.getId() + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The book with id=" + bookDTO.getId() + " hasn't been found!");
             }
 
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
     }
 
@@ -131,13 +124,9 @@ public class BookController {
             var bookOpt = bookRepository.getById(id);
             if (bookOpt.isPresent()){
                 bookRepository.delete(bookOpt.get());
-                return Response.ok()
-                        .entity("The book has been deleted successfully.")
-                        .build();
+                return Response.ok("The book has been deleted successfully.").build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The book with id=" + id + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The book with id=" + id + " hasn't been found!");
             }
         } catch (Exception ex){
             logger.catching(ex);

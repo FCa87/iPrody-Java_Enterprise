@@ -13,18 +13,13 @@ import java.util.Objects;
 public class BookUtils {
 
     public static boolean isValid(BookDTO bookDTO){
-        try{
-            int result = 0;
-            if (bookDTO.getId() == null || bookDTO.getId() > 0) result++;
-            if (bookDTO.getTitle() != null && bookDTO.getTitle().length() <= 255) result++;
-            if (bookDTO.getAuthor() != null && bookDTO.getAuthor().length() <= 255) result++;
-            if (bookDTO.getPublishedYear() != null && bookDTO.getPublishedYear() > 0) result++;
-            if (bookDTO.getGenre() != null && bookDTO.getGenre().length() <= 100) result++;
-            if (bookDTO.getBorrowedList() == null) bookDTO.setBorrowedList(new ArrayList<>());
-            return result == 5;
-        } catch (Exception ex){
-            return false;
-        }
+        if (bookDTO.getId() != null && bookDTO.getId() < 0) return false;
+        if (bookDTO.getTitle() == null || bookDTO.getTitle().length() > 255) return false;
+        if (bookDTO.getAuthor() == null || bookDTO.getAuthor().length() > 255) return false;
+        if (bookDTO.getPublishedYear() == null || bookDTO.getPublishedYear() <= 0) return false;
+        if (bookDTO.getGenre() == null || bookDTO.getGenre().length() > 100) return false;
+        if (bookDTO.getBorrowedList() == null) bookDTO.setBorrowedList(new ArrayList<>());
+        return true;
     }
 
     public static BookDTO toREST (Book book){
@@ -44,13 +39,12 @@ public class BookUtils {
     }
 
     public static boolean compareFields(Book book1, Book book2){
-        int result = 0;
-        if (Objects.equals(book1.getId(), book2.getId())) result++;
-        if (book1.getTitle().compareTo(book2.getTitle()) == 0) result++;
-        if (book1.getAuthor().compareTo(book2.getAuthor()) == 0) result++;
-        if (book1.getGenre().compareTo(book2.getGenre()) == 0) result++;
-        if (Objects.equals(book1.getPublishedYear(), book2.getPublishedYear())) result++;
-        return result == 5;
+        if (!Objects.equals(book1.getId(), book2.getId())) return false;
+        if (book1.getTitle().compareTo(book2.getTitle()) != 0) return false;
+        if (book1.getAuthor().compareTo(book2.getAuthor()) != 0) return false;
+        if (book1.getGenre().compareTo(book2.getGenre()) != 0) return false;
+        if (!Objects.equals(book1.getPublishedYear(), book2.getPublishedYear())) return false;
+        return true;
     }
 
 }

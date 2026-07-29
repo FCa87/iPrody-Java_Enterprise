@@ -3,6 +3,7 @@ package iPrody.controller;
 
 import iPrody.dto.ReaderDTO;
 import iPrody.repo.ReaderRepository;
+import iPrody.utils.CommonUtils;
 import iPrody.utils.ErrorUtils;
 import iPrody.utils.ReaderUtils;
 import jakarta.ws.rs.*;
@@ -42,9 +43,7 @@ public class ReaderController {
             if (result.isPresent()){
                 return Response.ok(ReaderUtils.toREST(result.get())).build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reader with id=" + id + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reader with id=" + id + " hasn't been found!");
             }
         } catch (Exception ex){
             logger.catching(ex);
@@ -71,9 +70,7 @@ public class ReaderController {
                         "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
     }
 
@@ -91,14 +88,10 @@ public class ReaderController {
                             "Something has gone wrong! Contact our support.", Response.Status.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reader with id=" + readerDTO.getId() + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reader with id=" + readerDTO.getId() + " hasn't been found!");
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
     }
 
@@ -124,14 +117,10 @@ public class ReaderController {
                             "Something has gone wrong! Contact our support", Response.Status.INTERNAL_SERVER_ERROR);
                 }
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reader with id=" + readerDTO.getId() + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reader with id=" + readerDTO.getId() + " hasn't been found!");
             }
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid values of input fields. Please check them.")
-                    .build();
+            return CommonUtils.badRequestResponse("Invalid values of input fields. Please check them.");
         }
     }
 
@@ -146,9 +135,7 @@ public class ReaderController {
                         .entity("The reader has been deleted successfully!")
                         .build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("The reader with id=" + id + " hasn't been found!")
-                        .build();
+                return CommonUtils.notFoundResponse("The reader with id=" + id + " hasn't been found!");
             }
         } catch (Exception ex) {
             logger.catching(ex);

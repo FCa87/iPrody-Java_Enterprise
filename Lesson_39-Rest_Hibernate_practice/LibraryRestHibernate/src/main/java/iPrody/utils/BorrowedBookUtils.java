@@ -9,17 +9,12 @@ import java.util.Objects;
 public class BorrowedBookUtils {
 
     public static boolean isValid(BorrowedBookDTO borrowedBookDTO){
-        try{
-            int result = 0;
-            if (borrowedBookDTO.getId() == null || borrowedBookDTO.getId() > 0) result++;
-            if (borrowedBookDTO.getBookId() != null) result++;
-            if (borrowedBookDTO.getReaderId() != null) result++;
-            if (borrowedBookDTO.getBorrowDate() != null ) result++;
-            if (borrowedBookDTO.getStatus().compareTo("borrowed") == 0 || borrowedBookDTO.getStatus().compareTo("returned") == 0) result++;
-            return result == 5;
-        } catch (Exception ex){
-            return false;
-        }
+        if (borrowedBookDTO.getId() != null && borrowedBookDTO.getId() <= 0) return false;
+        if (borrowedBookDTO.getBookId() == null) return false;
+        if (borrowedBookDTO.getReaderId() == null) return false;
+        if (borrowedBookDTO.getBorrowDate() == null ) return false;
+        if (borrowedBookDTO.getStatus().compareTo("borrowed") != 0 && borrowedBookDTO.getStatus().compareTo("returned") != 0) return false;
+        return true;
     }
 
     public static BorrowedBookDTO toREST (BorrowedBook borrowedBook){
@@ -37,14 +32,13 @@ public class BorrowedBookUtils {
     }
 
     public static boolean compareFields(BorrowedBook borrowedBook1, BorrowedBook borrowedBook2){
-        int result = 0;
-        if (Objects.equals(borrowedBook1.getId(), borrowedBook2.getId())) result++;
-        if (borrowedBook1.getBookId().compareTo(borrowedBook2.getBookId()) == 0) result++;
-        if (borrowedBook1.getReaderId().compareTo(borrowedBook2.getReaderId()) == 0) result++;
-        if (borrowedBook1.getBorrowDate().compareTo(borrowedBook2.getBorrowDate()) == 0) result++;
-        if (Objects.equals(borrowedBook1.getReturnDate(), borrowedBook2.getReturnDate())) result++;
-        if (borrowedBook1.getStatus().compareTo(borrowedBook2.getStatus()) == 0) result++;
-        return result == 6;
+        if (!Objects.equals(borrowedBook1.getId(), borrowedBook2.getId())) return false;
+        if (borrowedBook1.getBookId().compareTo(borrowedBook2.getBookId()) != 0) return false;
+        if (borrowedBook1.getReaderId().compareTo(borrowedBook2.getReaderId()) != 0) return false;
+        if (borrowedBook1.getBorrowDate().compareTo(borrowedBook2.getBorrowDate()) != 0) return false;
+        if (!Objects.equals(borrowedBook1.getReturnDate(), borrowedBook2.getReturnDate())) return false;
+        if (borrowedBook1.getStatus().compareTo(borrowedBook2.getStatus()) != 0) return false;
+        return true;
     }
 
 }
